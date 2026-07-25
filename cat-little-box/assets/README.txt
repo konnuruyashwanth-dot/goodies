@@ -36,3 +36,9 @@ TO SHARE WITH CAT
 Easiest: zip the whole "cat-little-box" folder and send it to her — she opens
 index.html on her phone or laptop. (Ask me if you'd like it put online with a
 link instead; I can walk you through a free host like Netlify Drop.)
+
+-----------------------------------------------------------
+PUTTING IT ONLINE
+-----------------------------------------------------------
+See DEPLOY.txt (in the main cat-little-box folder) for step-by-step
+instructions to get a free shareable link in about 2 minutes.

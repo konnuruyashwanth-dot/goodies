@@ -1,0 +1,40 @@
+CAT'S LITTLE BOX OF GOODIES — how to put it online (free, ~2 minutes)
+=====================================================================
+
+This is a plain static website (just files), so it can go on any free
+static host. The easiest, no-account option is Netlify Drop.
+
+OPTION A — Netlify Drop (easiest, no sign-up needed to test)
+------------------------------------------------------------
+1. Go to:  https://app.netlify.com/drop
+2. Drag the WHOLE "cat-little-box" folder onto the page
+   (or drag the cat-little-box.zip file — it unzips automatically).
+3. Wait a few seconds. You'll get a live link like
+   https://something-random-1234.netlify.app
+4. Send that link to Cat. Done!
+   (To keep it forever + rename it, make a free Netlify account when prompted.)
+
+OPTION B — Cloudflare Pages / Vercel / GitHub Pages
+---------------------------------------------------
+Any of these work too — upload the folder as a static site. index.html
+is the home page. No build step or settings needed.
+
+GOOD TO KNOW
+------------
+- index.html must stay at the top level (it's the home page).
+- Keep the "assets" folder next to it — that's where the photo, video,
+  voice note, doodle and preview image live.
+- robots.txt + a "noindex" tag are included so the page WON'T show up in
+  Google searches. It's private-by-link: only people you send the link to
+  can find it.
+- Link preview: when you paste the link in iMessage/WhatsApp it shows a
+  pretty card (assets/share.png). If the preview ever looks blank, open
+  index.html and replace  "assets/share.png"  with the FULL url, e.g.
+  "https://your-site.netlify.app/assets/share.png"
+- Anyone with the link can open it, so only share it with Cat. For a real
+  password, hosts like Netlify offer password protection on paid plans.
+
+TO EDIT CONTENT LATER
+---------------------
+See assets/README.txt for how to change text, photos, etc. After editing,
+just drag the folder onto Netlify Drop again to update the live site.
