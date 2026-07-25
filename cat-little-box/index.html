@@ -99,6 +99,8 @@
   .modal h3{font-weight:400;font-style:italic;color:var(--rose-deep);font-size:26px;margin-bottom:14px}
   .modal img.media,.modal video.media{width:100%;border-radius:14px;box-shadow:0 8px 20px var(--shadow);margin:6px 0 12px;background:#fbe9e3}
   .modal audio{width:100%;margin:8px 0 6px}
+  .videowrap{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;box-shadow:0 8px 20px var(--shadow);margin:6px 0 12px;background:#000}
+  .videowrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
   .letter{white-space:pre-wrap;line-height:1.75;font-size:16.5px;color:var(--ink)}
   .caption{color:var(--ink-soft);font-size:14px;line-height:1.6;margin-top:4px}
   .coupon{border:2px dashed var(--rose);border-radius:16px;padding:22px;text-align:center;background:repeating-linear-gradient(45deg,#fff6f1,#fff6f1 12px,#fdeae2 12px,#fdeae2 24px);position:relative}
@@ -188,6 +190,7 @@ const ITEMS = [
     emoji:"🎥",
     title:"Press play",
     teaser:"A little clip that always makes me smile.",
+    embed:"https://drive.google.com/file/d/1ZeVu9ntmPFDennpTAStBGj_BLrmxz8Ux/preview",
     src:"assets/video.mp4",
     caption:"Sound on. This one's just for you. ♡"
   },
@@ -238,7 +241,11 @@ function openItem(i){
       html+='<img class="media" loading="lazy" decoding="async" src="'+it.src+'" alt="'+esc(it.title)+'" onerror="this.outerHTML=window.__missing(\''+it.src+'\')"/>';
       if(it.caption) html+='<div class="caption">'+esc(it.caption)+'</div>'; break;
     case "video":
-      html+='<video class="media" src="'+it.src+'" poster="assets/poster.jpg" preload="metadata" controls playsinline></video>';
+      if(it.embed){
+        html+='<div class="videowrap"><iframe src="'+it.embed+'" allow="autoplay; fullscreen" allowfullscreen loading="lazy"></iframe></div>';
+      } else {
+        html+='<video class="media" src="'+it.src+'" poster="assets/poster.jpg" preload="metadata" controls playsinline></video>';
+      }
       if(it.caption) html+='<div class="caption">'+esc(it.caption)+'</div>'; break;
     case "voice":
       html+='<audio class="media" controls preload="metadata" src="'+it.src+'"></audio>';
