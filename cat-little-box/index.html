@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cat's Little Box of Goodies</title>
+<style>
+  :root{
+    --blush:#f7d9d5;
+    --blush-deep:#e9a8a0;
+    --cream:#fff7f2;
+    --cream-2:#fdeee6;
+    --rose:#d67c74;
+    --rose-deep:#b85c54;
+    --ink:#5a4842;
+    --ink-soft:#8a726a;
+    --gold:#d8a657;
+    --shadow:rgba(150,90,80,.18);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:"Georgia","Times New Roman",serif;
+    color:var(--ink);
+    background:
+      radial-gradient(1200px 600px at 20% -10%, var(--blush) 0%, transparent 60%),
+      radial-gradient(900px 500px at 100% 0%, #fbe3dc 0%, transparent 55%),
+      linear-gradient(160deg, var(--cream) 0%, var(--cream-2) 100%);
+    min-height:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    overflow-x:hidden;
+  }
+  .hearts{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+  .hearts span{position:absolute;bottom:-40px;color:var(--blush-deep);opacity:.5;font-size:18px;animation:rise linear infinite}
+  @keyframes rise{
+    0%{transform:translateY(0) rotate(0);opacity:0}
+    10%{opacity:.6}
+    100%{transform:translateY(-110vh) rotate(360deg);opacity:0}
+  }
+  .wrap{position:relative;z-index:1;width:100%;max-width:920px;padding:32px 20px 80px;flex:1}
+  .landing{min-height:78vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:18px}
+  .kicker{letter-spacing:.32em;text-transform:uppercase;font-size:12px;color:var(--rose);font-family:"Helvetica Neue",Arial,sans-serif}
+  h1{font-size:clamp(34px,7vw,58px);font-weight:400;color:var(--rose-deep);line-height:1.05}
+  h1 .script{font-style:italic}
+  .sub{color:var(--ink-soft);font-size:clamp(15px,2.4vw,19px);max-width:34ch;line-height:1.6}
+  .mailbox-btn{background:none;border:none;cursor:pointer;margin-top:6px;transition:transform .3s ease;filter:drop-shadow(0 14px 22px var(--shadow))}
+  .mailbox-btn:hover{transform:translateY(-4px) scale(1.02)}
+  .mailbox-btn:active{transform:translateY(0) scale(.99)}
+  .mailbox-svg{width:min(240px,60vw);height:auto}
+  .flapL,.flapR{transform-box:fill-box;transition:transform .55s cubic-bezier(.34,1.45,.5,1)}
+  .flapL{transform-origin:left bottom}
+  .flapR{transform-origin:right bottom}
+  .open .flapL{transform:rotate(-118deg)}
+  .open .flapR{transform:rotate(118deg)}
+  .peek{transform-box:fill-box;transform-origin:center bottom;opacity:0;transform:translateY(14px);transition:transform .55s .12s ease, opacity .5s .12s ease}
+  .open .peek{opacity:1;transform:translateY(-4px)}
+  .tap{margin-top:4px;font-size:13px;color:var(--rose);font-family:"Helvetica Neue",Arial,sans-serif;letter-spacing:.04em;animation:pulse 2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:.55}50%{opacity:1}}
+  .boxview{display:none;animation:fadeUp .6s ease both}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+  .box-head{text-align:center;margin-bottom:26px}
+  .box-head h2{font-weight:400;font-size:clamp(26px,5vw,40px);color:var(--rose-deep);font-style:italic}
+  .box-head p{color:var(--ink-soft);margin-top:6px;font-size:15px}
+  .grid{display:grid;gap:18px;grid-template-columns:repeat(auto-fill,minmax(180px,1fr))}
+  .card{position:relative;cursor:pointer;border:none;text-align:left;background:linear-gradient(160deg,#fffdfb,#fdeee7);border-radius:18px;padding:20px 18px 18px;box-shadow:0 10px 24px var(--shadow);transition:transform .22s ease, box-shadow .22s ease;overflow:hidden;font-family:inherit;color:var(--ink);min-height:150px;display:flex;flex-direction:column;justify-content:space-between}
+  .card:hover{transform:translateY(-5px);box-shadow:0 18px 34px var(--shadow)}
+  .card::after{content:"";position:absolute;inset:6px;border:1px solid rgba(214,124,116,.28);border-radius:13px;pointer-events:none}
+  .card .badge{display:inline-flex;align-items:center;gap:6px;align-self:flex-start;background:var(--blush);color:var(--rose-deep);font-family:"Helvetica Neue",Arial,sans-serif;font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:5px 10px;border-radius:999px}
+  .card .emoji{font-size:30px;line-height:1;margin:14px 0 8px}
+  .card .ctitle{font-size:19px;color:var(--rose-deep);line-height:1.2}
+  .card .cteaser{font-size:13px;color:var(--ink-soft);margin-top:4px;line-height:1.45}
+  .card .seal{position:absolute;top:14px;right:14px;font-size:16px;opacity:.5}
+  .overlay{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(90,60,55,.45);backdrop-filter:blur(4px)}
+  .overlay.show{display:flex;animation:fadeIn .25s ease}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  .modal{background:linear-gradient(165deg,#fffdfb,#fdf0ea);width:min(560px,100%);max-height:88vh;overflow:auto;border-radius:22px;box-shadow:0 30px 70px rgba(120,70,60,.4);padding:30px 28px 28px;position:relative;animation:pop .3s cubic-bezier(.34,1.56,.64,1)}
+  @keyframes pop{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
+  .modal .close{position:absolute;top:14px;right:14px;border:none;background:var(--blush);color:var(--rose-deep);width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:18px;line-height:1}
+  .modal .close:hover{background:var(--blush-deep);color:#fff}
+  .modal .mbadge{display:inline-block;background:var(--blush);color:var(--rose-deep);font-family:"Helvetica Neue",Arial,sans-serif;font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:5px 11px;border-radius:999px;margin-bottom:10px}
+  .modal h3{font-weight:400;font-style:italic;color:var(--rose-deep);font-size:26px;margin-bottom:14px}
+  .modal img.media,.modal video.media{width:100%;border-radius:14px;box-shadow:0 8px 20px var(--shadow);margin:6px 0 12px;background:#fbe9e3}
+  .modal audio{width:100%;margin:8px 0 6px}
+  .letter{white-space:pre-wrap;line-height:1.75;font-size:16.5px;color:var(--ink)}
+  .caption{color:var(--ink-soft);font-size:14px;line-height:1.6;margin-top:4px}
+  .song-row{display:flex;gap:14px;align-items:center;margin:6px 0 12px}
+  .song-cover{width:74px;height:74px;border-radius:12px;object-fit:cover;box-shadow:0 6px 14px var(--shadow);background:var(--blush)}
+  .song-meta .s-t{font-size:18px;color:var(--rose-deep)}
+  .song-meta .s-a{font-size:14px;color:var(--ink-soft)}
+  .btn-link{display:inline-block;margin-top:6px;background:var(--rose);color:#fff;text-decoration:none;font-family:"Helvetica Neue",Arial,sans-serif;font-size:13px;letter-spacing:.03em;padding:9px 16px;border-radius:999px}
+  .btn-link:hover{background:var(--rose-deep)}
+  .coupon{border:2px dashed var(--rose);border-radius:16px;padding:22px;text-align:center;background:repeating-linear-gradient(45deg,#fff6f1,#fff6f1 12px,#fdeae2 12px,#fdeae2 24px);position:relative}
+  .coupon .redeem{margin-top:6px;font-family:"Helvetica Neue",Arial,sans-serif;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--rose-deep)}
+  .coupon .cvalue{font-size:24px;font-style:italic;color:var(--rose-deep);margin:6px 0}
+  .coupon .cdesc{color:var(--ink-soft);font-size:14px}
+  .missing{background:#fff3ef;border:1px dashed var(--blush-deep);border-radius:12px;padding:14px;color:var(--ink-soft);font-size:14px;line-height:1.6;font-family:"Helvetica Neue",Arial,sans-serif}
+  .missing code{background:#fce3db;padding:2px 6px;border-radius:6px;color:var(--rose-deep)}
+  footer{position:relative;z-index:1;color:var(--ink-soft);font-size:13px;padding:20px;text-align:center;opacity:.8}
+  .backbtn{background:none;border:1px solid var(--blush-deep);color:var(--rose-deep);font-family:"Helvetica Neue",Arial,sans-serif;font-size:13px;padding:8px 16px;border-radius:999px;cursor:pointer;margin:26px auto 0;display:block}
+  .backbtn:hover{background:var(--blush)}
+</style>
+</head>
+<body>
+<div class="hearts" id="hearts"></div>
+<div class="wrap">
+  <section class="landing" id="landing">
+    <div class="kicker">a little something, just for you</div>
+    <h1>Cat's <span class="script">little box</span><br/>of goodies</h1>
+    <button class="mailbox-btn" id="openBtn" aria-label="Open the box">
+      <svg class="mailbox-svg" viewBox="0 0 220 200" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="cbFront" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#e3ba7f"/>
+            <stop offset="1" stop-color="#c6944c"/>
+          </linearGradient>
+          <linearGradient id="cbFlap" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#ecca90"/>
+            <stop offset="1" stop-color="#d6a967"/>
+          </linearGradient>
+        </defs>
+        <rect x="54" y="70" width="112" height="26" rx="3" fill="#8a5a30"/>
+        <g class="peek">
+          <rect x="86" y="44" width="48" height="34" rx="4" fill="#fff4ee" stroke="#e6bdb5" stroke-width="2"/>
+          <path d="M88 47 l22 15 l22 -15" fill="none" stroke="#e6bdb5" stroke-width="2"/>
+          <text x="110" y="70" font-size="16" text-anchor="middle" fill="#d67c74">&#9825;</text>
+        </g>
+        <rect x="48" y="84" width="124" height="90" rx="7" fill="url(#cbFront)"/>
+        <line x1="110" y1="86" x2="110" y2="172" stroke="#b07d3f" stroke-width="1.5" opacity=".45"/>
+        <rect x="48" y="122" width="124" height="4" fill="#b07d3f" opacity=".22"/>
+        <rect x="101" y="84" width="18" height="30" fill="#efe0bd" opacity=".85"/>
+        <g class="flapL"><rect x="48" y="74" width="62" height="12" rx="2" fill="url(#cbFlap)" stroke="#c69a5c" stroke-width="1"/></g>
+        <g class="flapR"><rect x="110" y="74" width="62" height="12" rx="2" fill="url(#cbFlap)" stroke="#c69a5c" stroke-width="1"/></g>
+      </svg>
+    </button>
+    <div class="tap">tap to open &#9825;</div>
+  </section>
+  <section class="boxview" id="boxview">
+    <div class="box-head">
+      <h2>Hi Cat &#9825;</h2>
+    </div>
+    <div class="grid" id="grid"></div>
+    <button class="backbtn" id="backBtn">&larr; close the box</button>
+  </section>
+</div>
+<footer>made with all my love &#9825;</footer>
+<div class="overlay" id="overlay">
+  <div class="modal" id="modal">
+    <button class="close" id="closeBtn" aria-label="Close">&times;</button>
+    <div id="modalBody"></div>
+  </div>
+</div>
+<script>
+
+const ITEMS = [
+  {
+    type:"note",
+    emoji:"💌",
+    title:"Open me first",
+    teaser:"A little hello before anything else.",
+    body:"Hi my love,I love you so much. I know i know you already know that but i just wanted to say it again. But i guess this is most i say...Anyways thank you for being borned and thank you for being my bestfriend and girlfriend and hopefully and confidently a wifeyyy too...i love you so much!! Happy 21st birthday babyyyyy.."
+  },
+  {
+    type:"photo",
+    emoji:"📸",
+    title:"Beautiful Beautiful Beautiful",
+    teaser:"One of my favourite pictures of you.",
+    src:"assets/photo1.png",
+    caption:"You and me. I look at this and my whole day gets better. ♡"
+  },
+  {
+    type:"video",
+    emoji:"🎥",
+    title:"Press play",
+    teaser:"A little clip that always makes me smile.",
+    src:"assets/video1.mp4",
+    caption:"Sound on. This one's just for you. ♡"
+  },
+  {
+    type:"doodle",
+    emoji:"🎨",
+    title:"A silly little drawing",
+    teaser:"I'm no artist, but it's the thought that counts.",
+    src:"assets/doodle1.jpg",
+    caption:"Made this thinking of you. ♡"
+  },
+  {
+    type:"voice",
+    emoji:"🎙️",
+    title:"Listen when you miss my voice",
+    teaser:"A little voice note, just for your ears.",
+    src:"assets/voice1.m4a",
+    caption:"Play this whenever you need to hear me. ♡"
+  },
+  
+];
+
+const LABELS={note:"Love note",photo:"Photo",video:"Video",voice:"Voice note",doodle:"Doodle",song:"Song",coupon:"Coupon"};
+const grid=document.getElementById('grid');
+ITEMS.forEach((it,i)=>{
+  const c=document.createElement('button');
+  c.className='card';
+  c.innerHTML='<span class="seal">♡</span>'+
+    '<span class="badge">'+(LABELS[it.type]||it.type)+'</span>'+
+    '<div class="emoji">'+(it.emoji||"💌")+'</div>'+
+    '<div><div class="ctitle">'+(it.title||"")+'</div>'+
+    '<div class="cteaser">'+(it.teaser||"")+'</div></div>';
+  c.addEventListener('click',function(){openItem(i);});
+  grid.appendChild(c);
+});
+
+const overlay=document.getElementById('overlay');
+const modalBody=document.getElementById('modalBody');
+function esc(s){return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+
+function openItem(i){
+  const it=ITEMS[i];
+  let html='<span class="mbadge">'+(LABELS[it.type]||it.type)+'</span><h3>'+esc(it.title)+'</h3>';
+  switch(it.type){
+    case "note":
+      html+='<div class="letter">'+esc(it.body)+'</div>'; break;
+    case "photo": case "doodle":
+      html+='<img class="media" src="'+it.src+'" alt="'+esc(it.title)+'" onerror="this.outerHTML=window.__missing(\''+it.src+'\')"/>';
+      if(it.caption) html+='<div class="caption">'+esc(it.caption)+'</div>'; break;
+    case "video":
+      html+='<video class="media" src="'+it.src+'" controls playsinline></video>';
+      if(it.caption) html+='<div class="caption">'+esc(it.caption)+'</div>'; break;
+    case "voice":
+      html+='<audio src="'+it.src+'" controls></audio>';
+      if(it.caption) html+='<div class="caption">'+esc(it.caption)+'</div>'; break;
+    case "song":
+      if(it.spotifyEmbed){
+        html+='<iframe class="spotify" style="border-radius:14px;border:0;margin:6px 0 4px" src="'+it.spotifyEmbed+'" width="100%" height="152" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>';
+      } else {
+        html+='<div class="song-row"><img class="song-cover" src="'+(it.cover||'')+'" alt="" onerror="this.style.visibility=\'hidden\'"/>'+
+          '<div class="song-meta"><div class="s-t">'+esc(it.songTitle||it.title)+'</div>'+
+          '<div class="s-a">'+esc(it.artist||"")+'</div></div></div>';
+      }
+      if(it.audio) html+='<audio src="'+it.audio+'" controls></audio>';
+      if(it.link) html+='<a class="btn-link" href="'+it.link+'" target="_blank" rel="noopener">▶ Open in Spotify</a>';
+      break;
+    case "coupon":
+      html+='<div class="coupon"><div class="redeem">&mdash; redeemable coupon &mdash;</div>'+
+        '<div class="cvalue">'+esc(it.value||it.title)+'</div>'+
+        '<div class="cdesc">'+esc(it.desc||"")+'</div></div>'; break;
+    default:
+      html+='<div class="letter">'+esc(it.body||"")+'</div>';
+  }
+  modalBody.innerHTML=html;
+  overlay.classList.add('show');
+}
+window.__missing=function(path){
+  return "<div class='missing'>This is a placeholder. Add your file at <code>"+esc(path)+"</code> in the assets folder and it will show up here.</div>";
+};
+function closeModal(){overlay.classList.remove('show');}
+document.getElementById('closeBtn').addEventListener('click',closeModal);
+overlay.addEventListener('click',function(e){if(e.target===overlay)closeModal();});
+document.addEventListener('keydown',function(e){if(e.key==="Escape")closeModal();});
+
+const landing=document.getElementById('landing');
+const boxview=document.getElementById('boxview');
+const openBtn=document.getElementById('openBtn');
+openBtn.addEventListener('click',function(){
+  openBtn.classList.add('open');
+  setTimeout(function(){landing.style.display='none';boxview.style.display='block';window.scrollTo({top:0,behavior:'smooth'});},420);
+});
+document.getElementById('backBtn').addEventListener('click',function(){
+  boxview.style.display='none';landing.style.display='flex';openBtn.classList.remove('open');
+});
+
+const h=document.getElementById('hearts');
+const glyphs=["♡","❤","💗","🌸"];
+for(let i=0;i<14;i++){
+  const s=document.createElement('span');
+  s.textContent=glyphs[i%glyphs.length];
+  s.style.left=Math.random()*100+"%";
+  s.style.fontSize=(12+Math.random()*22)+"px";
+  s.style.animationDuration=(9+Math.random()*10)+"s";
+  s.style.animationDelay=(-Math.random()*12)+"s";
+  h.appendChild(s);
+}
+</script>
+</body>
+</html>
