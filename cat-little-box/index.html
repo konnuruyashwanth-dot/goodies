@@ -101,12 +101,6 @@
   .modal audio{width:100%;margin:8px 0 6px}
   .letter{white-space:pre-wrap;line-height:1.75;font-size:16.5px;color:var(--ink)}
   .caption{color:var(--ink-soft);font-size:14px;line-height:1.6;margin-top:4px}
-  .song-row{display:flex;gap:14px;align-items:center;margin:6px 0 12px}
-  .song-cover{width:74px;height:74px;border-radius:12px;object-fit:cover;box-shadow:0 6px 14px var(--shadow);background:var(--blush)}
-  .song-meta .s-t{font-size:18px;color:var(--rose-deep)}
-  .song-meta .s-a{font-size:14px;color:var(--ink-soft)}
-  .btn-link{display:inline-block;margin-top:6px;background:var(--rose);color:#fff;text-decoration:none;font-family:"Helvetica Neue",Arial,sans-serif;font-size:13px;letter-spacing:.03em;padding:9px 16px;border-radius:999px}
-  .btn-link:hover{background:var(--rose-deep)}
   .coupon{border:2px dashed var(--rose);border-radius:16px;padding:22px;text-align:center;background:repeating-linear-gradient(45deg,#fff6f1,#fff6f1 12px,#fdeae2 12px,#fdeae2 24px);position:relative}
   .coupon .redeem{margin-top:6px;font-family:"Helvetica Neue",Arial,sans-serif;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--rose-deep)}
   .coupon .cvalue{font-size:24px;font-style:italic;color:var(--rose-deep);margin:6px 0}
@@ -210,8 +204,7 @@ const ITEMS = [
     emoji:"🎙️",
     title:"Listen when you miss my voice",
     teaser:"A little voice note, just for your ears.",
-    mp3:"assets/voice1.mp3",
-    src:"assets/voice1.m4a",
+    src:"assets/voice1.mp3",
     caption:"Play this whenever you need to hear me. ♡"
   },
   
@@ -248,22 +241,8 @@ function openItem(i){
       html+='<video class="media" src="'+it.src+'" poster="assets/poster.jpg" preload="metadata" controls playsinline></video>';
       if(it.caption) html+='<div class="caption">'+esc(it.caption)+'</div>'; break;
     case "voice":
-      html+='<audio controls preload="metadata">'+
-        (it.mp3?'<source src="'+it.mp3+'" type="audio/mpeg">':'')+
-        '<source src="'+it.src+'" type="audio/mp4">'+
-        'Your browser can\'t play this audio.</audio>';
+      html+='<audio class="media" controls preload="metadata" src="'+it.src+'"></audio>';
       if(it.caption) html+='<div class="caption">'+esc(it.caption)+'</div>'; break;
-    case "song":
-      if(it.spotifyEmbed){
-        html+='<iframe class="spotify" style="border-radius:14px;border:0;margin:6px 0 4px" src="'+it.spotifyEmbed+'" width="100%" height="152" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>';
-      } else {
-        html+='<div class="song-row"><img class="song-cover" src="'+(it.cover||'')+'" alt="" onerror="this.style.visibility=\'hidden\'"/>'+
-          '<div class="song-meta"><div class="s-t">'+esc(it.songTitle||it.title)+'</div>'+
-          '<div class="s-a">'+esc(it.artist||"")+'</div></div></div>';
-      }
-      if(it.audio) html+='<audio src="'+it.audio+'" controls></audio>';
-      if(it.link) html+='<a class="btn-link" href="'+it.link+'" target="_blank" rel="noopener">▶ Open in Spotify</a>';
-      break;
     case "coupon":
       html+='<div class="coupon"><div class="redeem">&mdash; redeemable coupon &mdash;</div>'+
         '<div class="cvalue">'+esc(it.value||it.title)+'</div>'+
