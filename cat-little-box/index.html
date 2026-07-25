@@ -88,7 +88,7 @@
   .card .ctitle{font-size:19px;color:var(--rose-deep);line-height:1.2}
   .card .cteaser{font-size:13px;color:var(--ink-soft);margin-top:4px;line-height:1.45}
   .card .seal{position:absolute;top:14px;right:14px;font-size:16px;opacity:.5}
-  .overlay{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(90,60,55,.45);backdrop-filter:blur(4px)}
+  .overlay{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(90,60,55,.5)}
   .overlay.show{display:flex;animation:fadeIn .25s ease}
   @keyframes fadeIn{from{opacity:0}to{opacity:1}}
   .modal{background:linear-gradient(165deg,#fffdfb,#fdf0ea);width:min(560px,100%);max-height:88vh;overflow:auto;border-radius:22px;box-shadow:0 30px 70px rgba(120,70,60,.4);padding:30px 28px 28px;position:relative;animation:pop .3s cubic-bezier(.34,1.56,.64,1)}
@@ -116,6 +116,10 @@
   footer{position:relative;z-index:1;color:var(--ink-soft);font-size:13px;padding:20px;text-align:center;opacity:.8}
   .backbtn{background:none;border:1px solid var(--blush-deep);color:var(--rose-deep);font-family:"Helvetica Neue",Arial,sans-serif;font-size:13px;padding:8px 16px;border-radius:999px;cursor:pointer;margin:26px auto 0;display:block}
   .backbtn:hover{background:var(--blush)}
+  @media (prefers-reduced-motion: reduce){
+    .hearts span{animation:none;display:none}
+    *{animation-duration:.001ms !important;transition-duration:.08s !important}
+  }
 </style>
 </head>
 <body>
@@ -182,7 +186,7 @@ const ITEMS = [
     emoji:"📸",
     title:"Beautiful Beautiful Beautiful",
     teaser:"One of my favourite pictures of you.",
-    src:"assets/photo1.png",
+    src:"assets/photo1.jpg",
     caption:"You and me. I look at this and my whole day gets better. ♡"
   },
   {
@@ -206,6 +210,7 @@ const ITEMS = [
     emoji:"🎙️",
     title:"Listen when you miss my voice",
     teaser:"A little voice note, just for your ears.",
+    mp3:"assets/voice1.mp3",
     src:"assets/voice1.m4a",
     caption:"Play this whenever you need to hear me. ♡"
   },
@@ -237,13 +242,16 @@ function openItem(i){
     case "note":
       html+='<div class="letter">'+esc(it.body)+'</div>'; break;
     case "photo": case "doodle":
-      html+='<img class="media" src="'+it.src+'" alt="'+esc(it.title)+'" onerror="this.outerHTML=window.__missing(\''+it.src+'\')"/>';
+      html+='<img class="media" loading="lazy" decoding="async" src="'+it.src+'" alt="'+esc(it.title)+'" onerror="this.outerHTML=window.__missing(\''+it.src+'\')"/>';
       if(it.caption) html+='<div class="caption">'+esc(it.caption)+'</div>'; break;
     case "video":
-      html+='<video class="media" src="'+it.src+'" controls playsinline></video>';
+      html+='<video class="media" src="'+it.src+'" poster="assets/poster.jpg" preload="metadata" controls playsinline></video>';
       if(it.caption) html+='<div class="caption">'+esc(it.caption)+'</div>'; break;
     case "voice":
-      html+='<audio src="'+it.src+'" controls></audio>';
+      html+='<audio controls preload="metadata">'+
+        (it.mp3?'<source src="'+it.mp3+'" type="audio/mpeg">':'')+
+        '<source src="'+it.src+'" type="audio/mp4">'+
+        'Your browser can\'t play this audio.</audio>';
       if(it.caption) html+='<div class="caption">'+esc(it.caption)+'</div>'; break;
     case "song":
       if(it.spotifyEmbed){
@@ -287,7 +295,7 @@ document.getElementById('backBtn').addEventListener('click',function(){
 
 const h=document.getElementById('hearts');
 const glyphs=["♡","❤","💗","🌸"];
-for(let i=0;i<14;i++){
+for(let i=0;i<8;i++){
   const s=document.createElement('span');
   s.textContent=glyphs[i%glyphs.length];
   s.style.left=Math.random()*100+"%";
